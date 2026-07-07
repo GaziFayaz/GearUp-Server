@@ -1,0 +1,4 @@
+name: default
+variables:
+  - name: localurl
+    value: http://localhost:4000
