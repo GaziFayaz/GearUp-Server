@@ -7,6 +7,7 @@ import authRoutes from "./modules/auth/auth.routes";
 import gearRoutes, { providerRouter as providerGearRoutes } from "./modules/gear/gear.routes";
 import categoryRoutes from "./modules/category/category.routes";
 import rentalRoutes, { providerRouter as providerRentalRoutes } from "./modules/rental/rental.routes";
+import paymentRoutes from "./modules/payment/payment.routes";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/provider/gear", providerGearRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/rentals", rentalRoutes);
 app.use("/api/provider/orders", providerRentalRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.use(globalErrorHandler);
 
