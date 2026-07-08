@@ -21,7 +21,10 @@ export const globalErrorHandler = (
     statusCode = 400;
     const zodErr = err as unknown as ZodError;
     message = zodErr.issues.map((i) => i.message).join(", ");
-  } else if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+  } else if (
+    err.name === "JsonWebTokenError" ||
+    err.name === "TokenExpiredError"
+  ) {
     statusCode = 401;
     message = err.message;
   }

@@ -2,15 +2,14 @@ import type { JwtPayload, SignOptions } from "jsonwebtoken";
 import jwt from "jsonwebtoken";
 
 const createToken = (
-	payload: JwtPayload,
-	secret: string,
-	signOptions: SignOptions,
+  payload: JwtPayload,
+  secret: string,
+  signOptions: SignOptions,
 ) => {
-	const token = jwt.sign(payload, secret, signOptions);
+  const token = jwt.sign(payload, secret, signOptions);
 
-	return token;
+  return token;
 };
-
 
 const verifyToken = (token: string, secret: string) => {
   try {
@@ -24,11 +23,11 @@ const verifyToken = (token: string, secret: string) => {
     return {
       success: false,
       error: error.message,
-    }
+    };
   }
-}
+};
 
 export const jwtUtils = {
   createToken,
-  verifyToken
-}
+  verifyToken,
+};

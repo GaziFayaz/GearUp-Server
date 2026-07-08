@@ -1,9 +1,21 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from "bun:test";
 import app from "../../../src/app";
 import { setupTestDb } from "../../helpers";
 import { prisma } from "../../../src/lib/prisma";
 
-type ApiResponse<T = any> = { success: boolean; statusCode: number; message: string; data: T };
+type ApiResponse<T = any> = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+};
 
 let server: ReturnType<typeof app.listen>;
 let baseUrl: string;
@@ -13,7 +25,11 @@ let gearId: string;
 let categoryId: string;
 let rentalId: string;
 
-async function registerAndLogin(name: string, email: string, role: string): Promise<string> {
+async function registerAndLogin(
+  name: string,
+  email: string,
+  role: string,
+): Promise<string> {
   const res = await fetch(`${baseUrl}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -27,7 +43,8 @@ beforeAll(async () => {
   await new Promise<void>((resolve) => {
     server = app.listen(0, () => {
       const addr = server.address();
-      if (addr && typeof addr === "object") baseUrl = `http://localhost:${addr.port}`;
+      if (addr && typeof addr === "object")
+        baseUrl = `http://localhost:${addr.port}`;
       resolve();
     });
   });
@@ -39,23 +56,44 @@ afterAll(() => {
 
 beforeEach(async () => {
   await setupTestDb();
-  customerToken = await registerAndLogin("Customer", `pc-${Date.now()}@example.com`, "CUSTOMER");
-  providerToken = await registerAndLogin("Provider", `pp-${Date.now()}@example.com`, "PROVIDER");
+  customerToken = await registerAndLogin(
+    "Customer",
+    `pc-${Date.now()}@example.com`,
+    "CUSTOMER",
+  );
+  providerToken = await registerAndLogin(
+    "Provider",
+    `pp-${Date.now()}@example.com`,
+    "PROVIDER",
+  );
 
-  const cat = await prisma.category.create({ data: { name: `Water Sports ${Date.now()}` } });
+  const cat = await prisma.category.create({
+    data: { name: `Water Sports ${Date.now()}` },
+  });
   categoryId = cat.id;
 
   const createGear = await fetch(`${baseUrl}/api/provider/gear`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${providerToken}` },
-    body: JSON.stringify({ name: "Surfboard", pricePerDay: 30, stockQuantity: 5, categoryId }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${providerToken}`,
+    },
+    body: JSON.stringify({
+      name: "Surfboard",
+      pricePerDay: 30,
+      stockQuantity: 5,
+      categoryId,
+    }),
   });
   const gearData = (await createGear.json()) as ApiResponse<{ id: string }>;
   gearId = gearData.data.id;
 
   const createRental = await fetch(`${baseUrl}/api/rentals`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${customerToken}`,
+    },
     body: JSON.stringify({
       startDate: new Date(Date.now() + 86400000).toISOString(),
       endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -71,11 +109,18 @@ describe("Payment Module", () => {
     it("should create a payment for a rental order", async () => {
       const res = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
 
-      const json = (await res.json()) as ApiResponse<{ status: string; method: string; amount: string }>;
+      const json = (await res.json()) as ApiResponse<{
+        status: string;
+        method: string;
+        amount: string;
+      }>;
       expect(res.status).toBe(201);
       expect(json.success).toBe(true);
       expect(json.data.status).toBe("PENDING");
@@ -85,19 +130,32 @@ describe("Payment Module", () => {
     it("should fail for nonexistent rental", async () => {
       const res = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
-        body: JSON.stringify({ rentalId: "00000000-0000-0000-0000-000000000000", method: "STRIPE" }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
+        body: JSON.stringify({
+          rentalId: "00000000-0000-0000-0000-000000000000",
+          method: "STRIPE",
+        }),
       });
 
       expect(res.status).toBe(404);
     });
 
     it("should fail when rental belongs to another user", async () => {
-      const otherToken = await registerAndLogin("Other", `po-${Date.now()}@example.com`, "CUSTOMER");
+      const otherToken = await registerAndLogin(
+        "Other",
+        `po-${Date.now()}@example.com`,
+        "CUSTOMER",
+      );
 
       const res = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${otherToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${otherToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
 
@@ -107,13 +165,19 @@ describe("Payment Module", () => {
     it("should fail when a completed payment already exists", async () => {
       await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
 
       const res = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
 
@@ -135,14 +199,22 @@ describe("Payment Module", () => {
     it("should confirm a pending payment", async () => {
       const createRes = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
-      const paymentData = (await createRes.json()) as ApiResponse<{ id: string }>;
+      const paymentData = (await createRes.json()) as ApiResponse<{
+        id: string;
+      }>;
 
       const res = await fetch(`${baseUrl}/api/payments/confirm`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ paymentId: paymentData.data.id }),
       });
 
@@ -154,20 +226,31 @@ describe("Payment Module", () => {
     it("should fail confirming already completed payment", async () => {
       const createRes = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
-      const paymentData = (await createRes.json()) as ApiResponse<{ id: string }>;
+      const paymentData = (await createRes.json()) as ApiResponse<{
+        id: string;
+      }>;
 
       await fetch(`${baseUrl}/api/payments/confirm`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ paymentId: paymentData.data.id }),
       });
 
       const res = await fetch(`${baseUrl}/api/payments/confirm`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ paymentId: paymentData.data.id }),
       });
 
@@ -179,7 +262,10 @@ describe("Payment Module", () => {
     it("should list user's payment history", async () => {
       await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
 
@@ -196,15 +282,26 @@ describe("Payment Module", () => {
     it("should get payment detail", async () => {
       const createRes = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({ rentalId, method: "STRIPE" }),
       });
-      const paymentData = (await createRes.json()) as ApiResponse<{ id: string }>;
+      const paymentData = (await createRes.json()) as ApiResponse<{
+        id: string;
+      }>;
 
-      const res = await fetch(`${baseUrl}/api/payments/${paymentData.data.id}`, {
-        headers: { Authorization: `Bearer ${customerToken}` },
-      });
-      const json = (await res.json()) as ApiResponse<{ id: string; amount: string }>;
+      const res = await fetch(
+        `${baseUrl}/api/payments/${paymentData.data.id}`,
+        {
+          headers: { Authorization: `Bearer ${customerToken}` },
+        },
+      );
+      const json = (await res.json()) as ApiResponse<{
+        id: string;
+        amount: string;
+      }>;
       expect(res.status).toBe(200);
       expect(json.data.id).toBe(paymentData.data.id);
     });

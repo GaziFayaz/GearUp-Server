@@ -44,7 +44,10 @@ export const authenticate = async (
 export const authorize = (...roles: string[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      throw new AppError(403, "You do not have permission to perform this action.");
+      throw new AppError(
+        403,
+        "You do not have permission to perform this action.",
+      );
     }
     next();
   };

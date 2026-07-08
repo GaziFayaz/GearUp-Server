@@ -3,7 +3,11 @@ import { paymentService } from "./payment.service";
 import { sendResponse } from "../../utils/sendResponse";
 
 const create = async (req: Request, res: Response) => {
-  const result = await paymentService.createPayment(req.user!.id, req.body.rentalId, req.body.method);
+  const result = await paymentService.createPayment(
+    req.user!.id,
+    req.body.rentalId,
+    req.body.method,
+  );
 
   sendResponse(res, {
     success: true,
@@ -14,7 +18,10 @@ const create = async (req: Request, res: Response) => {
 };
 
 const confirm = async (req: Request, res: Response) => {
-  const result = await paymentService.confirmPayment(req.body.paymentId, req.user!.id);
+  const result = await paymentService.confirmPayment(
+    req.body.paymentId,
+    req.user!.id,
+  );
 
   sendResponse(res, {
     success: true,
@@ -42,7 +49,10 @@ const getUserPayments = async (req: Request, res: Response) => {
 };
 
 const getById = async (req: Request, res: Response) => {
-  const result = await paymentService.getPaymentById(req.params.id as string, req.user!.id);
+  const result = await paymentService.getPaymentById(
+    req.params.id as string,
+    req.user!.id,
+  );
 
   sendResponse(res, {
     success: true,

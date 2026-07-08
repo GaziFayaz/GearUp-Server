@@ -1,10 +1,27 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from "bun:test";
 import app from "../../../src/app";
 import { setupTestDb } from "../../helpers";
 import { prisma } from "../../../src/lib/prisma";
 
-type ApiResponse<T = any> = { success: boolean; statusCode: number; message: string; data: T };
-type GearItem = { id: string; name: string; pricePerDay: string; brand: string | null };
+type ApiResponse<T = any> = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+};
+type GearItem = {
+  id: string;
+  name: string;
+  pricePerDay: string;
+  brand: string | null;
+};
 
 let server: ReturnType<typeof app.listen>;
 let baseUrl: string;
@@ -12,7 +29,11 @@ let providerToken: string;
 let customerToken: string;
 let categoryId: string;
 
-async function registerAndLogin(name: string, email: string, role: string): Promise<string> {
+async function registerAndLogin(
+  name: string,
+  email: string,
+  role: string,
+): Promise<string> {
   const res = await fetch(`${baseUrl}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,7 +47,8 @@ beforeAll(async () => {
   await new Promise<void>((resolve) => {
     server = app.listen(0, () => {
       const addr = server.address();
-      if (addr && typeof addr === "object") baseUrl = `http://localhost:${addr.port}`;
+      if (addr && typeof addr === "object")
+        baseUrl = `http://localhost:${addr.port}`;
       resolve();
     });
   });
@@ -38,8 +60,16 @@ afterAll(() => {
 
 beforeEach(async () => {
   await setupTestDb();
-  providerToken = await registerAndLogin("Provider", `gp-${Date.now()}@example.com`, "PROVIDER");
-  customerToken = await registerAndLogin("Customer", `gc-${Date.now()}@example.com`, "CUSTOMER");
+  providerToken = await registerAndLogin(
+    "Provider",
+    `gp-${Date.now()}@example.com`,
+    "PROVIDER",
+  );
+  customerToken = await registerAndLogin(
+    "Customer",
+    `gc-${Date.now()}@example.com`,
+    "CUSTOMER",
+  );
 
   const cat = await prisma.category.create({
     data: { name: `Cycling ${Date.now()}` },
@@ -67,7 +97,9 @@ describe("Gear Module - Public", () => {
       });
 
       const res = await fetch(`${baseUrl}/api/gear`);
-      const json = (await res.json()) as ApiResponse<GearItem[]> & { meta: { page: number; limit: number; total: number } };
+      const json = (await res.json()) as ApiResponse<GearItem[]> & {
+        meta: { page: number; limit: number; total: number };
+      };
       expect(res.status).toBe(200);
       expect(json.success).toBe(true);
       expect(json.data.length).toBe(1);
@@ -83,7 +115,12 @@ describe("Gear Module - Public", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Tent", pricePerDay: 15, stockQuantity: 3, categoryId: cat2.id }),
+        body: JSON.stringify({
+          name: "Tent",
+          pricePerDay: 15,
+          stockQuantity: 3,
+          categoryId: cat2.id,
+        }),
       });
 
       const res = await fetch(`${baseUrl}/api/gear?categoryId=${cat2.id}`);
@@ -99,7 +136,12 @@ describe("Gear Module - Public", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Cheap Gloves", pricePerDay: 5, stockQuantity: 10, categoryId }),
+        body: JSON.stringify({
+          name: "Cheap Gloves",
+          pricePerDay: 5,
+          stockQuantity: 10,
+          categoryId,
+        }),
       });
 
       const res = await fetch(`${baseUrl}/api/gear?minPrice=1&maxPrice=10`);
@@ -114,7 +156,12 @@ describe("Gear Module - Public", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Expensive", pricePerDay: 500, stockQuantity: 1, categoryId }),
+        body: JSON.stringify({
+          name: "Expensive",
+          pricePerDay: 500,
+          stockQuantity: 1,
+          categoryId,
+        }),
       });
 
       const res = await fetch(`${baseUrl}/api/gear?minPrice=1000`);
@@ -131,13 +178,21 @@ describe("Gear Module - Public", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Road Bike", pricePerDay: 30, stockQuantity: 2, categoryId, brand: "Giant" }),
+        body: JSON.stringify({
+          name: "Road Bike",
+          pricePerDay: 30,
+          stockQuantity: 2,
+          categoryId,
+          brand: "Giant",
+        }),
       });
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
       const gearId = created.data.id;
 
       const res = await fetch(`${baseUrl}/api/gear/${gearId}`);
-      const json = (await res.json()) as ApiResponse<GearItem & { provider: { name: string } }>;
+      const json = (await res.json()) as ApiResponse<
+        GearItem & { provider: { name: string } }
+      >;
       expect(res.status).toBe(200);
       expect(json.data.name).toBe("Road Bike");
       expect(json.data.brand).toBe("Giant");
@@ -172,7 +227,10 @@ describe("Gear Module - Provider", () => {
         }),
       });
 
-      const json = (await res.json()) as ApiResponse<{ name: string; providerId: string }>;
+      const json = (await res.json()) as ApiResponse<{
+        name: string;
+        providerId: string;
+      }>;
       expect(res.status).toBe(201);
       expect(json.success).toBe(true);
       expect(json.data.name).toBe("Kayak");
@@ -182,7 +240,12 @@ describe("Gear Module - Provider", () => {
       const res = await fetch(`${baseUrl}/api/provider/gear`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: "Kayak", pricePerDay: 40, stockQuantity: 3, categoryId }),
+        body: JSON.stringify({
+          name: "Kayak",
+          pricePerDay: 40,
+          stockQuantity: 3,
+          categoryId,
+        }),
       });
 
       expect(res.status).toBe(401);
@@ -195,7 +258,12 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${customerToken}`,
         },
-        body: JSON.stringify({ name: "Kayak", pricePerDay: 40, stockQuantity: 3, categoryId }),
+        body: JSON.stringify({
+          name: "Kayak",
+          pricePerDay: 40,
+          stockQuantity: 3,
+          categoryId,
+        }),
       });
 
       expect(res.status).toBe(403);
@@ -243,7 +311,12 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Old Name", pricePerDay: 20, stockQuantity: 2, categoryId }),
+        body: JSON.stringify({
+          name: "Old Name",
+          pricePerDay: 20,
+          stockQuantity: 2,
+          categoryId,
+        }),
       });
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
       const gearId = created.data.id;
@@ -257,7 +330,10 @@ describe("Gear Module - Provider", () => {
         body: JSON.stringify({ name: "New Name", pricePerDay: 25 }),
       });
 
-      const json = (await res.json()) as ApiResponse<{ name: string; pricePerDay: string }>;
+      const json = (await res.json()) as ApiResponse<{
+        name: string;
+        pricePerDay: string;
+      }>;
       expect(res.status).toBe(200);
       expect(json.data.name).toBe("New Name");
     });
@@ -269,20 +345,32 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Protected", pricePerDay: 20, stockQuantity: 2, categoryId }),
+        body: JSON.stringify({
+          name: "Protected",
+          pricePerDay: 20,
+          stockQuantity: 2,
+          categoryId,
+        }),
       });
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
 
-      const otherToken = await registerAndLogin("Other", `other-p-${Date.now()}@example.com`, "PROVIDER");
+      const otherToken = await registerAndLogin(
+        "Other",
+        `other-p-${Date.now()}@example.com`,
+        "PROVIDER",
+      );
 
-      const res = await fetch(`${baseUrl}/api/provider/gear/${created.data.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${otherToken}`,
+      const res = await fetch(
+        `${baseUrl}/api/provider/gear/${created.data.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${otherToken}`,
+          },
+          body: JSON.stringify({ name: "Stolen" }),
         },
-        body: JSON.stringify({ name: "Stolen" }),
-      });
+      );
 
       expect(res.status).toBe(403);
     });
@@ -296,14 +384,22 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "To Delete", pricePerDay: 10, stockQuantity: 1, categoryId }),
+        body: JSON.stringify({
+          name: "To Delete",
+          pricePerDay: 10,
+          stockQuantity: 1,
+          categoryId,
+        }),
       });
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
 
-      const res = await fetch(`${baseUrl}/api/provider/gear/${created.data.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${providerToken}` },
-      });
+      const res = await fetch(
+        `${baseUrl}/api/provider/gear/${created.data.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${providerToken}` },
+        },
+      );
 
       const json = (await res.json()) as ApiResponse;
       expect(res.status).toBe(200);
@@ -317,16 +413,28 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "Protected Delete", pricePerDay: 10, stockQuantity: 1, categoryId }),
+        body: JSON.stringify({
+          name: "Protected Delete",
+          pricePerDay: 10,
+          stockQuantity: 1,
+          categoryId,
+        }),
       });
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
 
-      const otherToken = await registerAndLogin("Other2", `other2-${Date.now()}@example.com`, "PROVIDER");
+      const otherToken = await registerAndLogin(
+        "Other2",
+        `other2-${Date.now()}@example.com`,
+        "PROVIDER",
+      );
 
-      const res = await fetch(`${baseUrl}/api/provider/gear/${created.data.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${otherToken}` },
-      });
+      const res = await fetch(
+        `${baseUrl}/api/provider/gear/${created.data.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${otherToken}` },
+        },
+      );
 
       expect(res.status).toBe(403);
     });
@@ -340,7 +448,12 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "My Item 1", pricePerDay: 10, stockQuantity: 1, categoryId }),
+        body: JSON.stringify({
+          name: "My Item 1",
+          pricePerDay: 10,
+          stockQuantity: 1,
+          categoryId,
+        }),
       });
       await fetch(`${baseUrl}/api/provider/gear`, {
         method: "POST",
@@ -348,7 +461,12 @@ describe("Gear Module - Provider", () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${providerToken}`,
         },
-        body: JSON.stringify({ name: "My Item 2", pricePerDay: 20, stockQuantity: 2, categoryId }),
+        body: JSON.stringify({
+          name: "My Item 2",
+          pricePerDay: 20,
+          stockQuantity: 2,
+          categoryId,
+        }),
       });
 
       const res = await fetch(`${baseUrl}/api/provider/gear`, {

@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from "bun:test";
 import app from "../../../src/app";
 import { setupTestDb } from "../../helpers";
 
@@ -9,7 +16,13 @@ type ApiResponse<T = any> = {
   data: T;
 };
 
-type AuthUser = { id: string; name: string; email: string; role: string; status: string };
+type AuthUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+};
 type AuthData = { user: AuthUser; accessToken: string };
 
 let server: ReturnType<typeof app.listen>;
@@ -168,7 +181,10 @@ describe("Auth Module", () => {
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: `noexist${Date.now()}@example.com`, password: "password123" }),
+        body: JSON.stringify({
+          email: `noexist${Date.now()}@example.com`,
+          password: "password123",
+        }),
       });
 
       const json = (await res.json()) as ApiResponse;

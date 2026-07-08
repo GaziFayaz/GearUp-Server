@@ -1,7 +1,13 @@
 import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
 
-const getAllUsers = async (filters: { role?: string; status?: string; search?: string; page?: number; limit?: number }) => {
+const getAllUsers = async (filters: {
+  role?: string;
+  status?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+}) => {
   const { role, status, search, page = 1, limit = 10 } = filters;
 
   const where: any = {};
@@ -17,7 +23,14 @@ const getAllUsers = async (filters: { role?: string; status?: string; search?: s
   const [data, total] = await Promise.all([
     prisma.user.findMany({
       where,
-      select: { id: true, name: true, email: true, role: true, status: true, createdAt: true },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        status: true,
+        createdAt: true,
+      },
       skip: (page - 1) * limit,
       take: limit,
       orderBy: { createdAt: "desc" },
@@ -28,7 +41,11 @@ const getAllUsers = async (filters: { role?: string; status?: string; search?: s
   return { data, meta: { page, limit, total } };
 };
 
-const updateUserStatus = async (userId: string, status: string, adminId: string) => {
+const updateUserStatus = async (
+  userId: string,
+  status: string,
+  adminId: string,
+) => {
   if (userId === adminId) {
     throw new AppError(400, "You cannot change your own status.");
   }
@@ -45,7 +62,12 @@ const updateUserStatus = async (userId: string, status: string, adminId: string)
   });
 };
 
-const getAllGear = async (filters: { providerId?: string; category?: string; page?: number; limit?: number }) => {
+const getAllGear = async (filters: {
+  providerId?: string;
+  category?: string;
+  page?: number;
+  limit?: number;
+}) => {
   const { providerId, category, page = 1, limit = 10 } = filters;
 
   const where: any = {};
@@ -79,7 +101,11 @@ const toggleGearAvailability = async (gearId: string, isAvailable: boolean) => {
   });
 };
 
-const getAllRentals = async (filters: { status?: string; page?: number; limit?: number }) => {
+const getAllRentals = async (filters: {
+  status?: string;
+  page?: number;
+  limit?: number;
+}) => {
   const { status, page = 1, limit = 10 } = filters;
   const where: any = {};
   if (status) where.status = status;
@@ -104,7 +130,15 @@ const getAllRentals = async (filters: { status?: string; page?: number; limit?: 
 };
 
 const getPlatformStats = async () => {
-  const [totalUsers, usersByRole, totalGear, gearByCategory, totalRentals, rentalsByStatus, completedRevenue] = await Promise.allSettled([
+  const [
+    totalUsers,
+    usersByRole,
+    totalGear,
+    gearByCategory,
+    totalRentals,
+    rentalsByStatus,
+    completedRevenue,
+  ] = await Promise.allSettled([
     prisma.user.count(),
     prisma.user.groupBy({ by: ["role"], _count: true }),
     prisma.gearItem.count(),
@@ -128,23 +162,33 @@ const getPlatformStats = async () => {
     gearByCategory: getValue(gearByCategory, []),
     totalRentals: getValue(totalRentals, 0),
     rentalsByStatus: getValue(rentalsByStatus, []),
-    completedRevenue: getValue(completedRevenue, { _sum: { amount: 0 } } as any),
+    completedRevenue: getValue(completedRevenue, {
+      _sum: { amount: 0 },
+    } as any),
   } as any;
 };
 
 const createCategory = async (data: { name: string; description?: string }) => {
-  const existing = await prisma.category.findUnique({ where: { name: data.name } });
-  if (existing) throw new AppError(409, "A category with this name already exists.");
+  const existing = await prisma.category.findUnique({
+    where: { name: data.name },
+  });
+  if (existing)
+    throw new AppError(409, "A category with this name already exists.");
 
   return prisma.category.create({ data });
 };
 
-const updateCategory = async (id: string, data: { name?: string; description?: string }) => {
+const updateCategory = async (
+  id: string,
+  data: { name?: string; description?: string },
+) => {
   const category = await prisma.category.findUnique({ where: { id } });
   if (!category) throw new AppError(404, "Category not found.");
 
   if (data.name) {
-    const existing = await prisma.category.findUnique({ where: { name: data.name } });
+    const existing = await prisma.category.findUnique({
+      where: { name: data.name },
+    });
     if (existing && existing.id !== id) {
       throw new AppError(409, "A category with this name already exists.");
     }

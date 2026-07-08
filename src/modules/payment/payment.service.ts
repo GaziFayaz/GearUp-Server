@@ -1,7 +1,11 @@
 import { prisma } from "../../lib/prisma";
 import AppError from "../../utils/AppError";
 
-const createPayment = async (customerId: string, rentalId: string, method: string) => {
+const createPayment = async (
+  customerId: string,
+  rentalId: string,
+  method: string,
+) => {
   const rental = await prisma.rentalOrder.findUnique({
     where: { id: rentalId },
     include: { payments: true },
@@ -15,14 +19,19 @@ const createPayment = async (customerId: string, rentalId: string, method: strin
     throw new AppError(403, "You can only pay for your own rentals.");
   }
 
-  const existingCompleted = rental.payments.find((p) => p.status === "COMPLETED");
+  const existingCompleted = rental.payments.find(
+    (p) => p.status === "COMPLETED",
+  );
   if (existingCompleted) {
     throw new AppError(400, "This rental has already been paid.");
   }
 
   const existingPending = rental.payments.find((p) => p.status === "PENDING");
   if (existingPending) {
-    throw new AppError(400, "A pending payment already exists for this rental.");
+    throw new AppError(
+      400,
+      "A pending payment already exists for this rental.",
+    );
   }
 
   const payment = await prisma.payment.create({
@@ -71,7 +80,10 @@ const confirmPayment = async (paymentId: string, userId: string) => {
   return updated;
 };
 
-const getUserPayments = async (customerId: string, filters: { page?: number; limit?: number }) => {
+const getUserPayments = async (
+  customerId: string,
+  filters: { page?: number; limit?: number },
+) => {
   const { page = 1, limit = 10 } = filters;
 
   const where = { rental: { customerId } };

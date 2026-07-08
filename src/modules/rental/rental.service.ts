@@ -10,7 +10,9 @@ type CreateRentalInput = {
 const rentalInclude = {
   rentalItems: {
     include: {
-      gearItem: { select: { id: true, name: true, brand: true, pricePerDay: true } },
+      gearItem: {
+        select: { id: true, name: true, brand: true, pricePerDay: true },
+      },
     },
   },
   customer: { select: { id: true, name: true, email: true } },
@@ -25,7 +27,9 @@ const createRental = async (customerId: string, data: CreateRentalInput) => {
     throw new AppError(400, "End date must be after start date.");
   }
 
-  const rentalDays = Math.ceil((parsedEnd.getTime() - parsedStart.getTime()) / (1000 * 60 * 60 * 24));
+  const rentalDays = Math.ceil(
+    (parsedEnd.getTime() - parsedStart.getTime()) / (1000 * 60 * 60 * 24),
+  );
 
   // Validate all gear items exist and have stock
   const gearIds = data.items.map((i) => i.gearItemId);
@@ -39,10 +43,15 @@ const createRental = async (customerId: string, data: CreateRentalInput) => {
 
   for (const item of data.items) {
     const gear = gearItems.find((g) => g.id === item.gearItemId);
-    if (!gear) throw new AppError(400, `Gear item ${item.gearItemId} not found.`);
-    if (!gear.isAvailable) throw new AppError(400, `Gear "${gear.name}" is not available.`);
+    if (!gear)
+      throw new AppError(400, `Gear item ${item.gearItemId} not found.`);
+    if (!gear.isAvailable)
+      throw new AppError(400, `Gear "${gear.name}" is not available.`);
     if (gear.stockQuantity < item.quantity) {
-      throw new AppError(400, `Insufficient stock for "${gear.name}". Available: ${gear.stockQuantity}, requested: ${item.quantity}`);
+      throw new AppError(
+        400,
+        `Insufficient stock for "${gear.name}". Available: ${gear.stockQuantity}, requested: ${item.quantity}`,
+      );
     }
   }
 
@@ -90,7 +99,10 @@ const createRental = async (customerId: string, data: CreateRentalInput) => {
   return rental;
 };
 
-const getUserRentals = async (customerId: string, filters: { status?: string; page?: number; limit?: number }) => {
+const getUserRentals = async (
+  customerId: string,
+  filters: { status?: string; page?: number; limit?: number },
+) => {
   const { status, page = 1, limit = 10 } = filters;
   const where: any = { customerId };
   if (status) where.status = status;
@@ -131,7 +143,10 @@ const getRentalById = async (rentalId: string, userId: string) => {
   return rental;
 };
 
-const getProviderOrders = async (providerId: string, filters: { status?: string; page?: number; limit?: number }) => {
+const getProviderOrders = async (
+  providerId: string,
+  filters: { status?: string; page?: number; limit?: number },
+) => {
   const { status, page = 1, limit = 10 } = filters;
 
   const where: any = {
@@ -163,7 +178,11 @@ const validTransitions: Record<string, string[]> = {
   PICKED_UP: ["RETURNED"],
 };
 
-const updateOrderStatus = async (rentalId: string, providerId: string, newStatus: string) => {
+const updateOrderStatus = async (
+  rentalId: string,
+  providerId: string,
+  newStatus: string,
+) => {
   const rental = await prisma.rentalOrder.findUnique({
     where: { id: rentalId },
     include: {
@@ -176,14 +195,19 @@ const updateOrderStatus = async (rentalId: string, providerId: string, newStatus
   }
 
   // Verify provider owns at least one item
-  const ownsItem = rental.rentalItems.some((item: any) => item.gearItem.providerId === providerId);
+  const ownsItem = rental.rentalItems.some(
+    (item: any) => item.gearItem.providerId === providerId,
+  );
   if (!ownsItem) {
     throw new AppError(403, "You can only update orders containing your gear.");
   }
 
   const allowedTransitions = validTransitions[rental.status] || [];
   if (!allowedTransitions.includes(newStatus)) {
-    throw new AppError(400, `Cannot transition from ${rental.status} to ${newStatus}.`);
+    throw new AppError(
+      400,
+      `Cannot transition from ${rental.status} to ${newStatus}.`,
+    );
   }
 
   const updated = await prisma.$transaction(async (tx) => {

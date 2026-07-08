@@ -9,7 +9,11 @@ import catchAsync from "../../utils/catchAsync";
 const customerRouter = Router();
 customerRouter.use(authenticate, authorize("CUSTOMER"));
 
-customerRouter.post("/", validateRequest(createRentalSchema), catchAsync(rentalController.create));
+customerRouter.post(
+  "/",
+  validateRequest(createRentalSchema),
+  catchAsync(rentalController.create),
+);
 customerRouter.get("/", catchAsync(rentalController.getUserRentals));
 customerRouter.get("/:id", catchAsync(rentalController.getById));
 
@@ -18,7 +22,11 @@ const providerRouter = Router();
 providerRouter.use(authenticate, authorize("PROVIDER"));
 
 providerRouter.get("/", catchAsync(rentalController.getProviderOrders));
-providerRouter.patch("/:id", validateRequest(updateStatusSchema), catchAsync(rentalController.updateStatus));
+providerRouter.patch(
+  "/:id",
+  validateRequest(updateStatusSchema),
+  catchAsync(rentalController.updateStatus),
+);
 
 export default customerRouter;
 export { providerRouter };

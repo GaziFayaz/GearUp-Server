@@ -15,8 +15,16 @@ router.get("/:id", catchAsync(gearController.getById));
 const providerRouter = Router();
 providerRouter.use(authenticate, authorize("PROVIDER"));
 
-providerRouter.post("/", validateRequest(createGearSchema), catchAsync(gearController.create));
-providerRouter.put("/:id", validateRequest(updateGearSchema), catchAsync(gearController.update));
+providerRouter.post(
+  "/",
+  validateRequest(createGearSchema),
+  catchAsync(gearController.create),
+);
+providerRouter.put(
+  "/:id",
+  validateRequest(updateGearSchema),
+  catchAsync(gearController.update),
+);
 providerRouter.delete("/:id", catchAsync(gearController.remove));
 providerRouter.get("/", catchAsync(gearController.getMyGear));
 

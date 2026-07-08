@@ -4,7 +4,11 @@ import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
 import AppError from "../../utils/AppError";
 
-const generateTokens = (payload: { id: string; email: string; role: string }) => {
+const generateTokens = (payload: {
+  id: string;
+  email: string;
+  role: string;
+}) => {
   const accessToken = jwtUtils.createToken(payload, config.jwt_access_secret, {
     expiresIn: config.jwt_access_expires_in,
   } as any);
@@ -76,7 +80,10 @@ const loginUser = async (email: string, password: string) => {
   }
 
   if (user.status === "SUSPENDED") {
-    throw new AppError(403, "Your account has been suspended. Contact support.");
+    throw new AppError(
+      403,
+      "Your account has been suspended. Contact support.",
+    );
   }
 
   const tokens = generateTokens({

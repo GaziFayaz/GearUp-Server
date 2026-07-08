@@ -3,7 +3,8 @@ import { gearService } from "./gear.service";
 import { sendResponse } from "../../utils/sendResponse";
 
 const getAll = async (req: Request, res: Response) => {
-  const { categoryId, brand, minPrice, maxPrice, search, page, limit } = req.query as Record<string, string | undefined>;
+  const { categoryId, brand, minPrice, maxPrice, search, page, limit } =
+    req.query as Record<string, string | undefined>;
 
   const result = await gearService.getAllGear({
     categoryId,
@@ -47,7 +48,11 @@ const create = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
-  const result = await gearService.updateGear(req.params.id as string, req.user!.id, req.body);
+  const result = await gearService.updateGear(
+    req.params.id as string,
+    req.user!.id,
+    req.body,
+  );
 
   sendResponse(res, {
     success: true,
@@ -58,7 +63,10 @@ const update = async (req: Request, res: Response) => {
 };
 
 const remove = async (req: Request, res: Response) => {
-  const result = await gearService.deleteGear(req.params.id as string, req.user!.id);
+  const result = await gearService.deleteGear(
+    req.params.id as string,
+    req.user!.id,
+  );
 
   sendResponse(res, {
     success: true,

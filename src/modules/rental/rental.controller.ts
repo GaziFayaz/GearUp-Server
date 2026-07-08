@@ -14,7 +14,10 @@ const create = async (req: Request, res: Response) => {
 };
 
 const getUserRentals = async (req: Request, res: Response) => {
-  const { status, page, limit } = req.query as Record<string, string | undefined>;
+  const { status, page, limit } = req.query as Record<
+    string,
+    string | undefined
+  >;
 
   const result = await rentalService.getUserRentals(req.user!.id, {
     status,
@@ -32,7 +35,10 @@ const getUserRentals = async (req: Request, res: Response) => {
 };
 
 const getById = async (req: Request, res: Response) => {
-  const result = await rentalService.getRentalById(req.params.id as string, req.user!.id);
+  const result = await rentalService.getRentalById(
+    req.params.id as string,
+    req.user!.id,
+  );
 
   sendResponse(res, {
     success: true,
@@ -43,7 +49,10 @@ const getById = async (req: Request, res: Response) => {
 };
 
 const getProviderOrders = async (req: Request, res: Response) => {
-  const { status, page, limit } = req.query as Record<string, string | undefined>;
+  const { status, page, limit } = req.query as Record<
+    string,
+    string | undefined
+  >;
 
   const result = await rentalService.getProviderOrders(req.user!.id, {
     status,

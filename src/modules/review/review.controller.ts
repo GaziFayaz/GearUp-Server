@@ -14,7 +14,9 @@ const create = async (req: Request, res: Response) => {
 };
 
 const getByGear = async (req: Request, res: Response) => {
-  const result = await reviewService.getGearReviews(req.params.gearId as string);
+  const result = await reviewService.getGearReviews(
+    req.params.gearId as string,
+  );
 
   sendResponse(res, {
     success: true,

@@ -4,18 +4,24 @@ import config from "./config";
 import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import authRoutes from "./modules/auth/auth.routes";
-import gearRoutes, { providerRouter as providerGearRoutes } from "./modules/gear/gear.routes";
+import gearRoutes, {
+  providerRouter as providerGearRoutes,
+} from "./modules/gear/gear.routes";
 import categoryRoutes from "./modules/category/category.routes";
-import rentalRoutes, { providerRouter as providerRentalRoutes } from "./modules/rental/rental.routes";
+import rentalRoutes, {
+  providerRouter as providerRentalRoutes,
+} from "./modules/rental/rental.routes";
 import paymentRoutes from "./modules/payment/payment.routes";
 import reviewRoutes from "./modules/review/review.routes";
 import adminRoutes from "./modules/admin/admin.routes";
 
 const app = express();
 
-app.use(cors({
-  origin: config.cors_origin,
-}));
+app.use(
+  cors({
+    origin: config.cors_origin,
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

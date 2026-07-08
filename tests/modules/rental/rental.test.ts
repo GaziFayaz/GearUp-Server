@@ -1,9 +1,21 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "bun:test";
+import {
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from "bun:test";
 import app from "../../../src/app";
 import { setupTestDb } from "../../helpers";
 import { prisma } from "../../../src/lib/prisma";
 
-type ApiResponse<T = any> = { success: boolean; statusCode: number; message: string; data: T };
+type ApiResponse<T = any> = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+};
 
 let server: ReturnType<typeof app.listen>;
 let baseUrl: string;
@@ -12,7 +24,11 @@ let providerToken: string;
 let gearId: string;
 let categoryId: string;
 
-async function registerAndLogin(name: string, email: string, role: string): Promise<string> {
+async function registerAndLogin(
+  name: string,
+  email: string,
+  role: string,
+): Promise<string> {
   const res = await fetch(`${baseUrl}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -26,7 +42,8 @@ beforeAll(async () => {
   await new Promise<void>((resolve) => {
     server = app.listen(0, () => {
       const addr = server.address();
-      if (addr && typeof addr === "object") baseUrl = `http://localhost:${addr.port}`;
+      if (addr && typeof addr === "object")
+        baseUrl = `http://localhost:${addr.port}`;
       resolve();
     });
   });
@@ -38,16 +55,34 @@ afterAll(() => {
 
 beforeEach(async () => {
   await setupTestDb();
-  customerToken = await registerAndLogin("Customer", `rc-${Date.now()}@example.com`, "CUSTOMER");
-  providerToken = await registerAndLogin("Provider", `rp-${Date.now()}@example.com`, "PROVIDER");
+  customerToken = await registerAndLogin(
+    "Customer",
+    `rc-${Date.now()}@example.com`,
+    "CUSTOMER",
+  );
+  providerToken = await registerAndLogin(
+    "Provider",
+    `rp-${Date.now()}@example.com`,
+    "PROVIDER",
+  );
 
-  const cat = await prisma.category.create({ data: { name: `Camping ${Date.now()}` } });
+  const cat = await prisma.category.create({
+    data: { name: `Camping ${Date.now()}` },
+  });
   categoryId = cat.id;
 
   const createRes = await fetch(`${baseUrl}/api/provider/gear`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${providerToken}` },
-    body: JSON.stringify({ name: "Tent", pricePerDay: 20, stockQuantity: 10, categoryId }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${providerToken}`,
+    },
+    body: JSON.stringify({
+      name: "Tent",
+      pricePerDay: 20,
+      stockQuantity: 10,
+      categoryId,
+    }),
   });
   const created = (await createRes.json()) as ApiResponse<{ id: string }>;
   gearId = created.data.id;
@@ -58,7 +93,10 @@ describe("Rental Module - Customer", () => {
     it("should create a rental order", async () => {
       const res = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 4).toISOString(),
@@ -66,7 +104,11 @@ describe("Rental Module - Customer", () => {
         }),
       });
 
-      const json = (await res.json()) as ApiResponse<{ totalAmount: string; status: string; rentalItems: any[] }>;
+      const json = (await res.json()) as ApiResponse<{
+        totalAmount: string;
+        status: string;
+        rentalItems: any[];
+      }>;
       expect(res.status).toBe(201);
       expect(json.success).toBe(true);
       expect(json.data.status).toBe("PENDING");
@@ -74,11 +116,17 @@ describe("Rental Module - Customer", () => {
     });
 
     it("should fail when gear is not available", async () => {
-      await prisma.gearItem.update({ where: { id: gearId }, data: { isAvailable: false } });
+      await prisma.gearItem.update({
+        where: { id: gearId },
+        data: { isAvailable: false },
+      });
 
       const res = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -92,7 +140,10 @@ describe("Rental Module - Customer", () => {
     it("should fail with insufficient stock", async () => {
       const res = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -106,7 +157,10 @@ describe("Rental Module - Customer", () => {
     it("should fail with endDate before startDate", async () => {
       const res = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000 * 5).toISOString(),
           endDate: new Date(Date.now() + 86400000).toISOString(),
@@ -136,7 +190,10 @@ describe("Rental Module - Customer", () => {
     it("should list customer's own orders", async () => {
       await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -157,7 +214,10 @@ describe("Rental Module - Customer", () => {
     it("should get rental order detail", async () => {
       const createRes = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -169,7 +229,10 @@ describe("Rental Module - Customer", () => {
       const res = await fetch(`${baseUrl}/api/rentals/${created.data.id}`, {
         headers: { Authorization: `Bearer ${customerToken}` },
       });
-      const json = (await res.json()) as ApiResponse<{ id: string; rentalItems: any[] }>;
+      const json = (await res.json()) as ApiResponse<{
+        id: string;
+        rentalItems: any[];
+      }>;
       expect(res.status).toBe(200);
       expect(json.data.rentalItems.length).toBe(1);
     });
@@ -181,7 +244,10 @@ describe("Rental Module - Provider", () => {
     it("should list provider's incoming orders", async () => {
       await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -202,7 +268,10 @@ describe("Rental Module - Provider", () => {
     it("should confirm an order", async () => {
       const createRes = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -211,11 +280,17 @@ describe("Rental Module - Provider", () => {
       });
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
 
-      const res = await fetch(`${baseUrl}/api/provider/orders/${created.data.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${providerToken}` },
-        body: JSON.stringify({ status: "CONFIRMED" }),
-      });
+      const res = await fetch(
+        `${baseUrl}/api/provider/orders/${created.data.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${providerToken}`,
+          },
+          body: JSON.stringify({ status: "CONFIRMED" }),
+        },
+      );
 
       const json = (await res.json()) as ApiResponse<{ status: string }>;
       expect(res.status).toBe(200);
@@ -225,7 +300,10 @@ describe("Rental Module - Provider", () => {
     it("should fail with invalid status transition", async () => {
       const createRes = await fetch(`${baseUrl}/api/rentals`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${customerToken}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
         body: JSON.stringify({
           startDate: new Date(Date.now() + 86400000).toISOString(),
           endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
@@ -235,11 +313,17 @@ describe("Rental Module - Provider", () => {
       const created = (await createRes.json()) as ApiResponse<{ id: string }>;
 
       // Try to set PICKED_UP before CONFIRMED
-      const res = await fetch(`${baseUrl}/api/provider/orders/${created.data.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${providerToken}` },
-        body: JSON.stringify({ status: "PICKED_UP" }),
-      });
+      const res = await fetch(
+        `${baseUrl}/api/provider/orders/${created.data.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${providerToken}`,
+          },
+          body: JSON.stringify({ status: "PICKED_UP" }),
+        },
+      );
 
       expect(res.status).toBe(400);
     });

@@ -23,11 +23,9 @@ const SEED = {
 };
 
 function generateToken(id: string, email: string, role: string) {
-  return jwtUtils.createToken(
-    { id, email, role },
-    config.jwt_access_secret,
-    { expiresIn: "365d" } as any,
-  );
+  return jwtUtils.createToken({ id, email, role }, config.jwt_access_secret, {
+    expiresIn: "365d",
+  } as any);
 }
 
 async function main() {
@@ -83,12 +81,20 @@ async function main() {
 
   // Categories
   const cycling = await prisma.category.create({
-    data: { id: SEED.category1Id, name: "Cycling", description: "Bicycles and cycling accessories" },
+    data: {
+      id: SEED.category1Id,
+      name: "Cycling",
+      description: "Bicycles and cycling accessories",
+    },
   });
   console.log(`Created category: ${cycling.name}`);
 
   const camping = await prisma.category.create({
-    data: { id: SEED.category2Id, name: "Camping", description: "Tents, sleeping bags, and outdoor gear" },
+    data: {
+      id: SEED.category2Id,
+      name: "Camping",
+      description: "Tents, sleeping bags, and outdoor gear",
+    },
   });
   console.log(`Created category: ${camping.name}`);
 
@@ -99,7 +105,7 @@ async function main() {
       name: "Mountain Bike Pro",
       description: "Full-suspension mountain bike, perfect for trails",
       brand: "Trek",
-      pricePerDay: 35.00,
+      pricePerDay: 35.0,
       stockQuantity: 5,
       isAvailable: true,
       categoryId: SEED.category1Id,
@@ -116,7 +122,7 @@ async function main() {
       name: "4-Person Camping Tent",
       description: "Waterproof tent with easy setup",
       brand: "Coleman",
-      pricePerDay: 25.00,
+      pricePerDay: 25.0,
       stockQuantity: 8,
       isAvailable: true,
       categoryId: SEED.category2Id,
@@ -133,7 +139,7 @@ async function main() {
       name: "Recreational Kayak",
       description: "Single-person sit-on-top kayak",
       brand: "Ocean Kayak",
-      pricePerDay: 40.00,
+      pricePerDay: 40.0,
       stockQuantity: 3,
       isAvailable: true,
       categoryId: SEED.category2Id,
@@ -150,7 +156,7 @@ async function main() {
       customerId: SEED.customerId,
       startDate: new Date("2026-07-10T00:00:00Z"),
       endDate: new Date("2026-07-13T00:00:00Z"),
-      totalAmount: 210.00, // (35 * 2 * 3 days)
+      totalAmount: 210.0, // (35 * 2 * 3 days)
       status: "PENDING",
       rentalItems: {
         create: [
@@ -158,7 +164,7 @@ async function main() {
             id: SEED.rentalItem1Id,
             gearItemId: SEED.gear1Id,
             quantity: 2,
-            pricePerDay: 35.00,
+            pricePerDay: 35.0,
           },
         ],
       },
@@ -171,7 +177,7 @@ async function main() {
     data: {
       id: SEED.payment1Id,
       rentalId: SEED.rental1Id,
-      amount: 210.00,
+      amount: 210.0,
       method: "STRIPE",
       status: "PENDING",
       transactionId: "txn_seed_001",
@@ -193,12 +199,22 @@ async function main() {
   console.log(`Created review: ${review.id} (rating: ${review.rating})`);
 
   // Generate tokens
-  const customerToken = generateToken(SEED.customerId, "customer@gearup.test", "CUSTOMER");
-  const providerToken = generateToken(SEED.providerId, "provider@gearup.test", "PROVIDER");
+  const customerToken = generateToken(
+    SEED.customerId,
+    "customer@gearup.test",
+    "CUSTOMER",
+  );
+  const providerToken = generateToken(
+    SEED.providerId,
+    "provider@gearup.test",
+    "PROVIDER",
+  );
   const adminToken = generateToken(SEED.adminId, "admin@gearup.test", "ADMIN");
 
   console.log("\n========== SEED DATA SUMMARY ==========");
-  console.log("Copy these values to api_collections/GearUp/environments/default.yml\n");
+  console.log(
+    "Copy these values to api_collections/GearUp/environments/default.yml\n",
+  );
   console.log(`localurl:         http://localhost:4000`);
   console.log(`category1Id:      ${SEED.category1Id}`);
   console.log(`category2Id:      ${SEED.category2Id}`);
@@ -217,7 +233,10 @@ async function main() {
   console.log("\n=======================================");
 
   // Auto-update environment file
-  const envPath = path.join(process.cwd(), "api_collections/GearUp/environments/default.yml");
+  const envPath = path.join(
+    process.cwd(),
+    "api_collections/GearUp/environments/default.yml",
+  );
   const envContent = `name: default
 variables:
   - name: localurl
@@ -260,7 +279,9 @@ variables:
     value: ${adminToken}
 `;
   fs.writeFileSync(envPath, envContent);
-  console.log(`Updated environment file at api_collections/GearUp/environments/default.yml`);
+  console.log(
+    `Updated environment file at api_collections/GearUp/environments/default.yml`,
+  );
 }
 
 main()

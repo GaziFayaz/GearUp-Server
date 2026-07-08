@@ -43,7 +43,16 @@ const gearSelect = {
 };
 
 const getAllGear = async (filters: GetAllFilters) => {
-  const { categoryId, brand, minPrice, maxPrice, search, page = 1, limit = 10, isAvailable = true } = filters;
+  const {
+    categoryId,
+    brand,
+    minPrice,
+    maxPrice,
+    search,
+    page = 1,
+    limit = 10,
+    isAvailable = true,
+  } = filters;
 
   const where: Prisma.GearItemWhereInput = { isAvailable };
 
@@ -133,7 +142,11 @@ const createGear = async (providerId: string, data: CreateGearInput) => {
   });
 };
 
-const updateGear = async (gearId: string, providerId: string, data: Partial<CreateGearInput & { isAvailable: boolean }>) => {
+const updateGear = async (
+  gearId: string,
+  providerId: string,
+  data: Partial<CreateGearInput & { isAvailable: boolean }>,
+) => {
   const gear = await prisma.gearItem.findUnique({ where: { id: gearId } });
 
   if (!gear) {
@@ -145,7 +158,9 @@ const updateGear = async (gearId: string, providerId: string, data: Partial<Crea
   }
 
   if (data.categoryId) {
-    const category = await prisma.category.findUnique({ where: { id: data.categoryId } });
+    const category = await prisma.category.findUnique({
+      where: { id: data.categoryId },
+    });
     if (!category) throw new AppError(404, "Category not found.");
   }
 
