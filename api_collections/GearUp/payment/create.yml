@@ -1,0 +1,31 @@
+info:
+  name: createPayment
+  type: http
+  seq: 15
+
+http:
+  method: POST
+  url: "{{localurl}}/api/payments/create"
+  auth: bearer
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{customerToken}}"
+  body:
+    mode: json
+    payload: |
+      { "rentalId": "{{rentalId}}", "method": "STRIPE" }
+
+runtime:
+  variables:
+    - name: customerToken
+      value: ""
+    - name: rentalId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,23 @@
+info:
+  name: getUserPayments
+  type: http
+  seq: 16
+
+http:
+  method: GET
+  url: "{{localurl}}/api/payments"
+  auth: bearer
+  headers:
+    - name: Authorization
+      value: "Bearer {{customerToken}}"
+
+runtime:
+  variables:
+    - name: customerToken
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
