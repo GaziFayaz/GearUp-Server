@@ -4,6 +4,8 @@ import config from "./config";
 import cookieParser from "cookie-parser";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import authRoutes from "./modules/auth/auth.routes";
+import gearRoutes, { providerRouter as providerGearRoutes } from "./modules/gear/gear.routes";
+import categoryRoutes from "./modules/category/category.routes";
 
 const app = express();
 
@@ -20,6 +22,9 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/gear", gearRoutes);
+app.use("/api/provider/gear", providerGearRoutes);
+app.use("/api/categories", categoryRoutes);
 
 app.use(globalErrorHandler);
 
