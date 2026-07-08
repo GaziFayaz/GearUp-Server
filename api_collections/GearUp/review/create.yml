@@ -1,0 +1,38 @@
+info:
+  name: createReview
+  type: http
+  seq: 17
+
+http:
+  method: POST
+  url: "{{localurl}}/api/reviews"
+  auth: bearer
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{customerToken}}"
+  body:
+    mode: json
+    payload: |
+      {
+        "gearItemId": "{{gearId}}",
+        "rentalId": "{{rentalId}}",
+        "rating": 5,
+        "comment": "Excellent gear!"
+      }
+
+runtime:
+  variables:
+    - name: customerToken
+      value: ""
+    - name: gearId
+      value: ""
+    - name: rentalId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
