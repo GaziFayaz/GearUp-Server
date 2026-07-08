@@ -1,0 +1,38 @@
+info:
+  name: createGear
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: "{{localurl}}/api/provider/gear"
+  auth: bearer
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{providerToken}}"
+  body:
+    mode: json
+    payload: |
+      {
+        "name": "Mountain Bike",
+        "description": "A sturdy mountain bike for trails",
+        "brand": "Trek",
+        "pricePerDay": 25.00,
+        "stockQuantity": 5,
+        "categoryId": "{{categoryId}}"
+      }
+
+runtime:
+  variables:
+    - name: providerToken
+      value: ""
+    - name: categoryId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,34 @@
+info:
+  name: updateGear
+  type: http
+  seq: 8
+
+http:
+  method: PUT
+  url: "{{localurl}}/api/provider/gear/{{gearId}}"
+  auth: bearer
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{providerToken}}"
+  body:
+    mode: json
+    payload: |
+      {
+        "name": "Updated Bike Name",
+        "pricePerDay": 30.00
+      }
+
+runtime:
+  variables:
+    - name: providerToken
+      value: ""
+    - name: gearId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

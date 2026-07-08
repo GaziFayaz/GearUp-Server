@@ -1,0 +1,20 @@
+info:
+  name: getGearById
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{localurl}}/api/gear/{{gearId}}"
+  auth: none
+
+runtime:
+  variables:
+    - name: gearId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
