@@ -16,20 +16,13 @@ http:
     mode: json
     payload: |
       {
-        "name": "Mountain Bike",
-        "description": "A sturdy mountain bike for trails",
-        "brand": "Trek",
-        "pricePerDay": 25.00,
-        "stockQuantity": 5,
-        "categoryId": "{{categoryId}}"
+        "name": "Road Bike Elite",
+        "description": "Carbon fiber road bike for racing",
+        "brand": "Specialized",
+        "pricePerDay": 50.00,
+        "stockQuantity": 4,
+        "categoryId": "{{category1Id}}"
       }
-
-runtime:
-  variables:
-    - name: providerToken
-      value: ""
-    - name: categoryId
-      value: ""
 
 settings:
   encodeUrl: true

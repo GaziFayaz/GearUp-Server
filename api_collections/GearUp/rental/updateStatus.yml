@@ -5,7 +5,7 @@ info:
 
 http:
   method: PATCH
-  url: "{{localurl}}/api/provider/orders/{{rentalId}}"
+  url: "{{localurl}}/api/provider/orders/{{rental1Id}}"
   auth: bearer
   headers:
     - name: Content-Type
@@ -16,13 +16,6 @@ http:
     mode: json
     payload: |
       { "status": "CONFIRMED" }
-
-runtime:
-  variables:
-    - name: providerToken
-      value: ""
-    - name: rentalId
-      value: ""
 
 settings:
   encodeUrl: true

@@ -15,14 +15,7 @@ http:
   body:
     mode: json
     payload: |
-      { "rentalId": "{{rentalId}}", "method": "STRIPE" }
-
-runtime:
-  variables:
-    - name: customerToken
-      value: ""
-    - name: rentalId
-      value: ""
+      { "rentalId": "{{rental1Id}}", "method": "STRIPE" }
 
 settings:
   encodeUrl: true

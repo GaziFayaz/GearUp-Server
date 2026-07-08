@@ -11,11 +11,6 @@ http:
     - name: Authorization
       value: "Bearer {{customerToken}}"
 
-runtime:
-  variables:
-    - name: customerToken
-      value: ""
-
 settings:
   encodeUrl: true
   timeout: 0

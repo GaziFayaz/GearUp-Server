@@ -11,11 +11,6 @@ http:
     - name: Authorization
       value: "Bearer {{adminToken}}"
 
-runtime:
-  variables:
-    - name: adminToken
-      value: ""
-
 settings:
   encodeUrl: true
   timeout: 0

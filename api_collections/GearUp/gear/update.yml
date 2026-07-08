@@ -5,7 +5,7 @@ info:
 
 http:
   method: PUT
-  url: "{{localurl}}/api/provider/gear/{{gearId}}"
+  url: "{{localurl}}/api/provider/gear/{{gear1Id}}"
   auth: bearer
   headers:
     - name: Content-Type
@@ -16,16 +16,9 @@ http:
     mode: json
     payload: |
       {
-        "name": "Updated Bike Name",
-        "pricePerDay": 30.00
+        "name": "Mountain Bike Pro X",
+        "pricePerDay": 40.00
       }
-
-runtime:
-  variables:
-    - name: providerToken
-      value: ""
-    - name: gearId
-      value: ""
 
 settings:
   encodeUrl: true

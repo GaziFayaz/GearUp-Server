@@ -6,7 +6,6 @@ info:
 http:
   method: POST
   url: "{{localurl}}/api/auth/login"
-  auth: none
   headers:
     - name: Content-Type
       value: application/json
@@ -14,8 +13,8 @@ http:
     mode: json
     payload: |
       {
-        "email": "john@example.com",
-        "password": "password123"
+        "email": "{{customerEmail}}",
+        "password": "{{password}}"
       }
 
 settings:

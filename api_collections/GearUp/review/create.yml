@@ -16,20 +16,11 @@ http:
     mode: json
     payload: |
       {
-        "gearItemId": "{{gearId}}",
-        "rentalId": "{{rentalId}}",
-        "rating": 5,
-        "comment": "Excellent gear!"
+        "gearItemId": "{{gear2Id}}",
+        "rentalId": "{{rental1Id}}",
+        "rating": 4,
+        "comment": "Great tent, very spacious!"
       }
-
-runtime:
-  variables:
-    - name: customerToken
-      value: ""
-    - name: gearId
-      value: ""
-    - name: rentalId
-      value: ""
 
 settings:
   encodeUrl: true

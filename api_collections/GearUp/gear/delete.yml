@@ -5,18 +5,11 @@ info:
 
 http:
   method: DELETE
-  url: "{{localurl}}/api/provider/gear/{{gearId}}"
+  url: "{{localurl}}/api/provider/gear/{{gear1Id}}"
   auth: bearer
   headers:
     - name: Authorization
       value: "Bearer {{providerToken}}"
-
-runtime:
-  variables:
-    - name: providerToken
-      value: ""
-    - name: gearId
-      value: ""
 
 settings:
   encodeUrl: true

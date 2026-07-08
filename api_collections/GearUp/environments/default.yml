@@ -2,3 +2,39 @@ name: default
 variables:
   - name: localurl
     value: http://localhost:4000
+  - name: customerEmail
+    value: customer@gearup.test
+  - name: providerEmail
+    value: provider@gearup.test
+  - name: adminEmail
+    value: admin@gearup.test
+  - name: password
+    value: password123
+  - name: customerId
+    value: c0000000-0000-4000-a000-000000000001
+  - name: providerId
+    value: c0000000-0000-4000-a000-000000000002
+  - name: adminId
+    value: c0000000-0000-4000-a000-000000000003
+  - name: category1Id
+    value: c0000000-0000-4000-a000-000000000010
+  - name: category2Id
+    value: c0000000-0000-4000-a000-000000000011
+  - name: gear1Id
+    value: c0000000-0000-4000-a000-000000000020
+  - name: gear2Id
+    value: c0000000-0000-4000-a000-000000000021
+  - name: gear3Id
+    value: c0000000-0000-4000-a000-000000000022
+  - name: rental1Id
+    value: c0000000-0000-4000-a000-000000000030
+  - name: payment1Id
+    value: c0000000-0000-4000-a000-000000000040
+  - name: review1Id
+    value: c0000000-0000-4000-a000-000000000050
+  - name: customerToken
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwMDAwMDAwLTAwMDAtNDAwMC1hMDAwLTAwMDAwMDAwMDAwMSIsImVtYWlsIjoiY3VzdG9tZXJAZ2VhcnVwLnRlc3QiLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3ODM1MjYyMjYsImV4cCI6MTgxNTA2MjIyNn0.Q2sIpTfyGs7U2Alon3dNhXxDsi39TsYF5kiRHiWuCaU
+  - name: providerToken
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwMDAwMDAwLTAwMDAtNDAwMC1hMDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoicHJvdmlkZXJAZ2VhcnVwLnRlc3QiLCJyb2xlIjoiUFJPVklERVIiLCJpYXQiOjE3ODM1MjYyMjYsImV4cCI6MTgxNTA2MjIyNn0.yqTk09g_XRZ20X53_Pf8rm9EZkqG7RpGmD-KQCOyYzA
+  - name: adminToken
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMwMDAwMDAwLTAwMDAtNDAwMC1hMDAwLTAwMDAwMDAwMDAwMyIsImVtYWlsIjoiYWRtaW5AZ2VhcnVwLnRlc3QiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODM1MjYyMjYsImV4cCI6MTgxNTA2MjIyNn0.6jpNIWua_5Ref3VOFP2-0wGWQKImE1Ih7fu8u2roS84

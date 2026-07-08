@@ -6,7 +6,6 @@ info:
 http:
   method: POST
   url: "{{localurl}}/api/auth/register"
-  auth: none
   headers:
     - name: Content-Type
       value: application/json
@@ -15,8 +14,8 @@ http:
     payload: |
       {
         "name": "John Doe",
-        "email": "john@example.com",
-        "password": "password123",
+        "email": "{{customerEmail}}",
+        "password": "{{password}}",
         "role": "CUSTOMER"
       }
 

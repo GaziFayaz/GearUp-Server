@@ -5,13 +5,8 @@ info:
 
 http:
   method: GET
-  url: "{{localurl}}/api/gear/{{gearId}}"
+  url: "{{localurl}}/api/gear/{{gear1Id}}"
   auth: none
-
-runtime:
-  variables:
-    - name: gearId
-      value: ""
 
 settings:
   encodeUrl: true

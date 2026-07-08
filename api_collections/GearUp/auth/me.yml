@@ -9,12 +9,7 @@ http:
   auth: bearer
   headers:
     - name: Authorization
-      value: "Bearer {{accessToken}}"
-
-runtime:
-  variables:
-    - name: accessToken
-      value: ""
+      value: "Bearer {{customerToken}}"
 
 settings:
   encodeUrl: true
