@@ -1,0 +1,23 @@
+info:
+  name: getStats
+  type: http
+  seq: 19
+
+http:
+  method: GET
+  url: "{{localurl}}/api/admin/stats"
+  auth: bearer
+  headers:
+    - name: Authorization
+      value: "Bearer {{adminToken}}"
+
+runtime:
+  variables:
+    - name: adminToken
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
