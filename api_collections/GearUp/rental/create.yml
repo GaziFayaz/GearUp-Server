@@ -1,0 +1,37 @@
+info:
+  name: createRental
+  type: http
+  seq: 11
+
+http:
+  method: POST
+  url: "{{localurl}}/api/rentals"
+  auth: bearer
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{customerToken}}"
+  body:
+    mode: json
+    payload: |
+      {
+        "startDate": "2026-07-10T00:00:00.000Z",
+        "endDate": "2026-07-13T00:00:00.000Z",
+        "items": [
+          { "gearItemId": "{{gearId}}", "quantity": 2 }
+        ]
+      }
+
+runtime:
+  variables:
+    - name: customerToken
+      value: ""
+    - name: gearId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

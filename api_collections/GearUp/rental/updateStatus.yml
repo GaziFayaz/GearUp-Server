@@ -1,0 +1,31 @@
+info:
+  name: updateOrderStatus
+  type: http
+  seq: 14
+
+http:
+  method: PATCH
+  url: "{{localurl}}/api/provider/orders/{{rentalId}}"
+  auth: bearer
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: "Bearer {{providerToken}}"
+  body:
+    mode: json
+    payload: |
+      { "status": "CONFIRMED" }
+
+runtime:
+  variables:
+    - name: providerToken
+      value: ""
+    - name: rentalId
+      value: ""
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
