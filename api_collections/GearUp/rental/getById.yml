@@ -6,7 +6,6 @@ info:
 http:
   method: GET
   url: "{{localurl}}/api/rentals/{{rental1Id}}"
-  auth: bearer
   headers:
     - name: Authorization
       value: "Bearer {{customerToken}}"

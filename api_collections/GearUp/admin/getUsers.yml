@@ -6,7 +6,6 @@ info:
 http:
   method: GET
   url: "{{localurl}}/api/admin/users"
-  auth: bearer
   headers:
     - name: Authorization
       value: "Bearer {{adminToken}}"

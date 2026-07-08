@@ -6,15 +6,14 @@ info:
 http:
   method: POST
   url: "{{localurl}}/api/reviews"
-  auth: bearer
   headers:
     - name: Content-Type
       value: application/json
     - name: Authorization
       value: "Bearer {{customerToken}}"
   body:
-    mode: json
-    payload: |
+    type: json
+    data: |-
       {
         "gearItemId": "{{gear2Id}}",
         "rentalId": "{{rental1Id}}",

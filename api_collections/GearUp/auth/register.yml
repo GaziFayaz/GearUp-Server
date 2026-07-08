@@ -10,8 +10,8 @@ http:
     - name: Content-Type
       value: application/json
   body:
-    mode: json
-    payload: |
+    type: json
+    data: |-
       {
         "name": "John Doe",
         "email": "{{customerEmail}}",

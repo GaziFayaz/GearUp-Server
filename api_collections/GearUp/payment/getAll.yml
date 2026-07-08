@@ -6,7 +6,6 @@ info:
 http:
   method: GET
   url: "{{localurl}}/api/payments"
-  auth: bearer
   headers:
     - name: Authorization
       value: "Bearer {{customerToken}}"

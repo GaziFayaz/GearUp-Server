@@ -6,15 +6,14 @@ info:
 http:
   method: POST
   url: "{{localurl}}/api/payments/create"
-  auth: bearer
   headers:
     - name: Content-Type
       value: application/json
     - name: Authorization
       value: "Bearer {{customerToken}}"
   body:
-    mode: json
-    payload: |
+    type: json
+    data: |-
       { "rentalId": "{{rental1Id}}", "method": "STRIPE" }
 
 settings:

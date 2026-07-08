@@ -6,15 +6,14 @@ info:
 http:
   method: PATCH
   url: "{{localurl}}/api/provider/orders/{{rental1Id}}"
-  auth: bearer
   headers:
     - name: Content-Type
       value: application/json
     - name: Authorization
       value: "Bearer {{providerToken}}"
   body:
-    mode: json
-    payload: |
+    type: json
+    data: |-
       { "status": "CONFIRMED" }
 
 settings:

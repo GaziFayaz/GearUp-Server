@@ -6,7 +6,6 @@ info:
 http:
   method: GET
   url: "{{localurl}}/api/auth/me"
-  auth: bearer
   headers:
     - name: Authorization
       value: "Bearer {{customerToken}}"
