@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { rentalService } from "./rental.service";
-import { sendResponse } from "../../utils/sendResponse";
+import { rentalService } from "./rental.service.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 
 const create = async (req: Request, res: Response) => {
   const result = await rentalService.createRental(req.user!.id, req.body);

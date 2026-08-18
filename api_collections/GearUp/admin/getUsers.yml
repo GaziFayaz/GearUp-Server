@@ -8,7 +8,7 @@ http:
   url: "{{localurl}}/api/admin/users"
   headers:
     - name: Authorization
-      value: "Bearer {{adminToken}}"
+      value: Bearer {{adminToken}}
 
 settings:
   encodeUrl: true

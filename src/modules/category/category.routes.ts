@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { categoryController } from "./category.controller";
-import catchAsync from "../../utils/catchAsync";
+import { categoryController } from "./category.controller.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 const router = Router();
 

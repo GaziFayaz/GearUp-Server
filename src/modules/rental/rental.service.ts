@@ -1,5 +1,5 @@
-import { prisma } from "../../lib/prisma";
-import AppError from "../../utils/AppError";
+import { prisma } from "../../lib/prisma.js";
+import AppError from "../../utils/AppError.js";
 
 type CreateRentalInput = {
   startDate: string;
@@ -174,7 +174,8 @@ const getProviderOrders = async (
 
 const validTransitions: Record<string, string[]> = {
   PENDING: ["CONFIRMED", "CANCELLED"],
-  CONFIRMED: ["PICKED_UP"],
+  CONFIRMED: ["PAID", "PICKED_UP", "CANCELLED"],
+  PAID: ["PICKED_UP", "CANCELLED"],
   PICKED_UP: ["RETURNED"],
 };
 

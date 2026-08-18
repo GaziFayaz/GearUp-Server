@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import config from "../config";
-import { jwtUtils } from "../utils/jwt";
-import { prisma } from "../lib/prisma";
-import AppError from "../utils/AppError";
+import config from "../config/index.js";
+import { jwtUtils } from "../utils/jwt.js";
+import { prisma } from "../lib/prisma.js";
+import AppError from "../utils/AppError.js";
 
 export const authenticate = async (
   req: Request,

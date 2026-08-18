@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { categoryService } from "./category.service";
-import { sendResponse } from "../../utils/sendResponse";
+import { categoryService } from "./category.service.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 
 const getAll = async (_req: Request, res: Response) => {
   const result = await categoryService.getAllCategories();

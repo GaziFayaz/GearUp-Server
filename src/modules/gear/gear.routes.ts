@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { gearController } from "./gear.controller";
-import { validateRequest } from "../../middleware/validateRequest";
-import { createGearSchema, updateGearSchema } from "./gear.validation";
-import { authenticate, authorize } from "../../middleware/auth";
-import catchAsync from "../../utils/catchAsync";
+import { gearController } from "./gear.controller.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
+import { createGearSchema, updateGearSchema } from "./gear.validation.js";
+import { authenticate, authorize } from "../../middleware/auth.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 const router = Router();
 

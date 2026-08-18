@@ -1,0 +1,4 @@
+{
+  "buildCommand": "bun run vercel-build",
+  "installCommand": "bun install"
+}

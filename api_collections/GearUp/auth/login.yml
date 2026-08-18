@@ -13,7 +13,7 @@ http:
     type: json
     data: |-
       {
-        "email": "{{customerEmail}}",
+        "email": "{{adminEmail}}",
         "password": "{{password}}"
       }
 

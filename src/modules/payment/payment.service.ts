@@ -1,5 +1,5 @@
-import { prisma } from "../../lib/prisma";
-import AppError from "../../utils/AppError";
+import { prisma } from "../../lib/prisma.js";
+import AppError from "../../utils/AppError.js";
 
 const createPayment = async (
   customerId: string,
@@ -69,12 +69,23 @@ const confirmPayment = async (paymentId: string, userId: string) => {
     throw new AppError(400, "Cannot confirm a failed payment.");
   }
 
-  const updated = await prisma.payment.update({
-    where: { id: paymentId },
-    data: {
-      status: "COMPLETED",
-      paidAt: new Date(),
-    },
+  const updated = await prisma.$transaction(async (tx) => {
+    const p = await tx.payment.update({
+      where: { id: paymentId },
+      data: {
+        status: "COMPLETED",
+        paidAt: new Date(),
+      },
+    });
+
+    await tx.rentalOrder.update({
+      where: { id: payment.rentalId },
+      data: {
+        status: "PAID",
+      },
+    });
+
+    return p;
   });
 
   return updated;

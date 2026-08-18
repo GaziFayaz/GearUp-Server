@@ -1,14 +1,14 @@
 import { Router } from "express";
-import { adminController } from "./admin.controller";
-import { validateRequest } from "../../middleware/validateRequest";
+import { adminController } from "./admin.controller.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
 import {
   updateUserStatusSchema,
   updateGearSchema,
   createCategorySchema,
   updateCategorySchema,
-} from "./admin.validation";
-import { authenticate, authorize } from "../../middleware/auth";
-import catchAsync from "../../utils/catchAsync";
+} from "./admin.validation.js";
+import { authenticate, authorize } from "../../middleware/auth.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 const router = Router();
 

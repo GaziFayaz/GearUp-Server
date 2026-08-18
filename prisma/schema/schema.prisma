@@ -21,6 +21,7 @@ enum UserStatus {
 enum RentalStatus {
   PENDING
   CONFIRMED
+  PAID
   PICKED_UP
   RETURNED
   CANCELLED

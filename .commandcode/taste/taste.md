@@ -15,7 +15,8 @@
 
 # api-collections
 
-- For Bruno API collections, JSON bodies must use `body: json` with inline `body` content (not `mode: json` with `payload`). Bruno does not recognize `mode: json`/`payload` and will blank out the body data. Use the format: `body:\n  type: json\n  data: |\n    { "key": "value" }`. Confidence: 0.70
+- For Bruno API collections, JSON bodies must use `body: json` with inline `body` content (not `mode: json` with `payload`). Bruno does not recognize `mode: json`/`payload` and will blank out the body data. Use the format: `body:\n  type: json\n  data: |\n    { "key": "value" }`. Confidence: 0.80
+- When creating or modifying Bruno API collection YAML files, research the correct Bruno YAML schema before writing. Do not guess the format. Confidence: 0.75
 
 # dependencies
 

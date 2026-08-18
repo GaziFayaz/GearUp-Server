@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "../../lib/prisma";
-import { jwtUtils } from "../../utils/jwt";
-import config from "../../config";
-import AppError from "../../utils/AppError";
+import { prisma } from "../../lib/prisma.js";
+import { jwtUtils } from "../../utils/jwt.js";
+import config from "../../config/index.js";
+import AppError from "../../utils/AppError.js";
 
 const generateTokens = (payload: {
   id: string;

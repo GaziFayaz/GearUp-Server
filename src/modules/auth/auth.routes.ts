@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { authController } from "./auth.controller";
-import { validateRequest } from "../../middleware/validateRequest";
-import { registerSchema, loginSchema } from "./auth.validation";
-import { authenticate } from "../../middleware/auth";
-import catchAsync from "../../utils/catchAsync";
+import { authController } from "./auth.controller.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
+import { registerSchema, loginSchema } from "./auth.validation.js";
+import { authenticate } from "../../middleware/auth.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 const router = Router();
 

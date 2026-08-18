@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { rentalController } from "./rental.controller";
-import { validateRequest } from "../../middleware/validateRequest";
-import { createRentalSchema, updateStatusSchema } from "./rental.validation";
-import { authenticate, authorize } from "../../middleware/auth";
-import catchAsync from "../../utils/catchAsync";
+import { rentalController } from "./rental.controller.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
+import { createRentalSchema, updateStatusSchema } from "./rental.validation.js";
+import { authenticate, authorize } from "../../middleware/auth.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 // Customer routes
 const customerRouter = Router();

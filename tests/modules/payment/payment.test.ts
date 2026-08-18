@@ -221,16 +221,39 @@ describe("Payment Module", () => {
       const json = (await res.json()) as ApiResponse<{ status: string }>;
       expect(res.status).toBe(200);
       expect(json.data.status).toBe("COMPLETED");
+
+      const rentalRes = await fetch(`${baseUrl}/api/rentals/${rentalId}`, {
+        headers: {
+          Authorization: `Bearer ${customerToken}`,
+        },
+      });
+      const rentalJson = (await rentalRes.json()) as ApiResponse<{ status: string }>;
+      expect(rentalJson.data.status).toBe("PAID");
     });
 
     it("should fail confirming already completed payment", async () => {
+      const newRentalRes = await fetch(`${baseUrl}/api/rentals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
+        body: JSON.stringify({
+          startDate: new Date(Date.now() + 86400000).toISOString(),
+          endDate: new Date(Date.now() + 86400000 * 3).toISOString(),
+          items: [{ gearItemId: gearId, quantity: 1 }],
+        }),
+      });
+      const newRentalData = (await newRentalRes.json()) as ApiResponse<{ id: string }>;
+      const testRentalId = newRentalData.data.id;
+
       const createRes = await fetch(`${baseUrl}/api/payments/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${customerToken}`,
         },
-        body: JSON.stringify({ rentalId, method: "STRIPE" }),
+        body: JSON.stringify({ rentalId: testRentalId, method: "STRIPE" }),
       });
       const paymentData = (await createRes.json()) as ApiResponse<{
         id: string;

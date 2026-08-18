@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { reviewController } from "./review.controller";
-import { validateRequest } from "../../middleware/validateRequest";
-import { createReviewSchema } from "./review.validation";
-import { authenticate, authorize } from "../../middleware/auth";
-import catchAsync from "../../utils/catchAsync";
+import { reviewController } from "./review.controller.js";
+import { validateRequest } from "../../middleware/validateRequest.js";
+import { createReviewSchema } from "./review.validation.js";
+import { authenticate, authorize } from "../../middleware/auth.js";
+import catchAsync from "../../utils/catchAsync.js";
 
 const router = Router();
 

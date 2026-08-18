@@ -1,25 +1,30 @@
 import cors from "cors";
 import express from "express";
-import config from "./config";
+import config from "./config/index.js";
 import cookieParser from "cookie-parser";
-import { globalErrorHandler } from "./middleware/globalErrorHandler";
-import authRoutes from "./modules/auth/auth.routes";
+import { globalErrorHandler } from "./middleware/globalErrorHandler.js";
+import authRoutes from "./modules/auth/auth.routes.js";
 import gearRoutes, {
   providerRouter as providerGearRoutes,
-} from "./modules/gear/gear.routes";
-import categoryRoutes from "./modules/category/category.routes";
+} from "./modules/gear/gear.routes.js";
+import categoryRoutes from "./modules/category/category.routes.js";
 import rentalRoutes, {
   providerRouter as providerRentalRoutes,
-} from "./modules/rental/rental.routes";
-import paymentRoutes from "./modules/payment/payment.routes";
-import reviewRoutes from "./modules/review/review.routes";
-import adminRoutes from "./modules/admin/admin.routes";
+} from "./modules/rental/rental.routes.js";
+import paymentRoutes from "./modules/payment/payment.routes.js";
+import reviewRoutes from "./modules/review/review.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
 
 const app = express();
 
+const allowedOrigins = config.cors_origin
+  ? config.cors_origin.split(",").map((o) => o.trim())
+  : true;
+
 app.use(
   cors({
-    origin: config.cors_origin,
+    origin: allowedOrigins,
+    credentials: true,
   }),
 );
 

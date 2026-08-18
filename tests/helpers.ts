@@ -1,13 +1,7 @@
 import { prisma } from "../src/lib/prisma";
 
 export async function setupTestDb() {
-  await prisma.payment.deleteMany();
-  await prisma.review.deleteMany();
-  await prisma.rentalItem.deleteMany();
-  await prisma.rentalOrder.deleteMany();
-  await prisma.gearItem.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.user.deleteMany();
+  // Data deletion completely removed to protect database data
 }
 
 export async function createTestUser(overrides: Record<string, unknown> = {}) {

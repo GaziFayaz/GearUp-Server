@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { reviewService } from "./review.service";
-import { sendResponse } from "../../utils/sendResponse";
+import { reviewService } from "./review.service.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 
 const create = async (req: Request, res: Response) => {
   const result = await reviewService.createReview(req.user!.id, req.body);

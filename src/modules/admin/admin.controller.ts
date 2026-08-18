@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { adminService } from "./admin.service";
-import { sendResponse } from "../../utils/sendResponse";
+import { adminService } from "./admin.service.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 
 const getAllUsers = async (req: Request, res: Response) => {
   const { role, status, search, page, limit } = req.query as Record<

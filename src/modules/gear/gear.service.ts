@@ -1,6 +1,6 @@
-import type { Prisma } from "../../../generated/prisma/client";
-import { prisma } from "../../lib/prisma";
-import AppError from "../../utils/AppError";
+import type { Prisma } from "../../../generated/prisma/client.js";
+import { prisma } from "../../lib/prisma.js";
+import AppError from "../../utils/AppError.js";
 
 type CreateGearInput = {
   name: string;

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { gearService } from "./gear.service";
-import { sendResponse } from "../../utils/sendResponse";
+import { gearService } from "./gear.service.js";
+import { sendResponse } from "../../utils/sendResponse.js";
 
 const getAll = async (req: Request, res: Response) => {
   const { categoryId, brand, minPrice, maxPrice, search, page, limit } =

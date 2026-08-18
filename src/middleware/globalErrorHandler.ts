@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
-import config from "../config";
-import { sendResponse } from "../utils/sendResponse";
-import AppError from "../utils/AppError";
+import config from "../config/index.js";
+import { sendResponse } from "../utils/sendResponse.js";
+import AppError from "../utils/AppError.js";
 import type { ZodError } from "zod";
 
 export const globalErrorHandler = (
