@@ -2,6 +2,45 @@ import type { Request, Response } from "express";
 import { paymentService } from "./payment.service.js";
 import { sendResponse } from "../../utils/sendResponse.js";
 
+const createCheckoutSession = async (req: Request, res: Response) => {
+  const result = await paymentService.createCheckoutSession(
+    req.user!.id,
+    req.body.rentalId,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Stripe checkout session created successfully",
+    data: result,
+  });
+};
+
+const verifySession = async (req: Request, res: Response) => {
+  const sessionId = (req.query.sessionId || req.body?.sessionId) as string;
+
+  const result = await paymentService.verifySession(
+    sessionId,
+    req.user!.id,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Payment session verified successfully",
+    data: result,
+  });
+};
+
+const handleWebhook = async (req: Request, res: Response) => {
+  const sig = req.headers["stripe-signature"] as string;
+  const rawBody = (req as any).rawBody || req.body;
+
+  const result = await paymentService.handleWebhook(rawBody, sig);
+
+  res.status(200).json(result);
+};
+
 const create = async (req: Request, res: Response) => {
   const result = await paymentService.createPayment(
     req.user!.id,
@@ -63,6 +102,9 @@ const getById = async (req: Request, res: Response) => {
 };
 
 export const paymentController = {
+  createCheckoutSession,
+  verifySession,
+  handleWebhook,
   create,
   confirm,
   getUserPayments,

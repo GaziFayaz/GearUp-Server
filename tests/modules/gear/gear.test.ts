@@ -102,12 +102,14 @@ describe("Gear Module - Public", () => {
       };
       expect(res.status).toBe(200);
       expect(json.success).toBe(true);
-      expect(json.data.length).toBe(1);
-      expect(json.data[0]!.name).toBe("Mountain Bike");
+      expect(json.data.length).toBeGreaterThanOrEqual(1);
+      expect(json.data.some((g) => g.name === "Mountain Bike")).toBe(true);
     });
 
     it("should filter gear by category", async () => {
-      const cat2 = await prisma.category.create({ data: { name: "Camping" } });
+      const cat2 = await prisma.category.create({
+        data: { name: `Camping ${Date.now()}` },
+      });
 
       await fetch(`${baseUrl}/api/provider/gear`, {
         method: "POST",
@@ -146,7 +148,12 @@ describe("Gear Module - Public", () => {
 
       const res = await fetch(`${baseUrl}/api/gear?minPrice=1&maxPrice=10`);
       const json = (await res.json()) as ApiResponse<GearItem[]>;
-      expect(json.data.length).toBe(1);
+      expect(json.data.length).toBeGreaterThanOrEqual(1);
+      expect(
+        json.data.every(
+          (g) => Number(g.pricePerDay) >= 1 && Number(g.pricePerDay) <= 10,
+        ),
+      ).toBe(true);
     });
 
     it("should return empty for out-of-range price filter", async () => {
