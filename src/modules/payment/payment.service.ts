@@ -62,7 +62,10 @@ const createCheckoutSession = async (
       if (item.gearItem.imageUrls && item.gearItem.imageUrls.length > 0) {
         // Only include absolute URLs (http/https)
         const firstImg = item.gearItem.imageUrls[0];
-        if (firstImg.startsWith("http://") || firstImg.startsWith("https://")) {
+        if (
+          firstImg &&
+          (firstImg.startsWith("http://") || firstImg.startsWith("https://"))
+        ) {
           images.push(firstImg);
         }
       }
