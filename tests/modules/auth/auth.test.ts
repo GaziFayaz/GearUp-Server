@@ -230,4 +230,75 @@ describe("Auth Module", () => {
       expect(json.success).toBe(false);
     });
   });
+
+  describe("POST /api/auth/refresh-token", () => {
+    it("should successfully refresh tokens with valid refresh token cookie", async () => {
+      const email = `refresh${Date.now()}@example.com`;
+      const regRes = await registerUser({
+        name: "Refresh User",
+        email,
+        password: "password123",
+      });
+      const cookieHeader = regRes.headers.get("set-cookie") || "";
+      expect(cookieHeader).toContain("refreshToken=");
+
+      const res = await fetch(`${baseUrl}/api/auth/refresh-token`, {
+        method: "POST",
+        headers: {
+          Cookie: cookieHeader,
+        },
+      });
+
+      const json = (await res.json()) as ApiResponse<AuthData>;
+      expect(res.status).toBe(200);
+      expect(json.success).toBe(true);
+      expect(json.data.accessToken).toBeDefined();
+      expect(json.data.user.email).toBe(email);
+      expect(res.headers.get("set-cookie")).toContain("refreshToken=");
+    });
+
+    it("should successfully refresh tokens when passed in request body", async () => {
+      const email = `refreshbody${Date.now()}@example.com`;
+      const regRes = await registerUser({
+        name: "Refresh Body User",
+        email,
+        password: "password123",
+      });
+      const cookieHeader = regRes.headers.get("set-cookie") || "";
+      const match = cookieHeader.match(/refreshToken=([^;]+)/);
+      const refreshToken = match ? match[1] : "";
+
+      const res = await fetch(`${baseUrl}/api/auth/refresh-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      const json = (await res.json()) as ApiResponse<AuthData>;
+      expect(res.status).toBe(200);
+      expect(json.success).toBe(true);
+      expect(json.data.accessToken).toBeDefined();
+    });
+
+    it("should fail with 401 when refresh token is missing", async () => {
+      const res = await fetch(`${baseUrl}/api/auth/refresh-token`, {
+        method: "POST",
+      });
+      const json = (await res.json()) as ApiResponse;
+      expect(res.status).toBe(401);
+      expect(json.success).toBe(false);
+    });
+
+    it("should fail with 401 when refresh token is invalid", async () => {
+      const res = await fetch(`${baseUrl}/api/auth/refresh-token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: "invalid-jwt-token" }),
+      });
+      const json = (await res.json()) as ApiResponse;
+      expect(res.status).toBe(401);
+      expect(json.success).toBe(false);
+    });
+  });
 });
+

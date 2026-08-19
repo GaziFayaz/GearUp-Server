@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service.js";
 import { sendResponse } from "../../utils/sendResponse.js";
+import AppError from "../../utils/AppError.js";
 
 const register = async (req: Request, res: Response) => {
   const result = await authService.registerUser(req.body);
@@ -44,6 +45,32 @@ const login = async (req: Request, res: Response) => {
   });
 };
 
+const refreshToken = async (req: Request, res: Response) => {
+  const token = req.cookies?.refreshToken || req.body?.refreshToken;
+  if (!token) {
+    throw new AppError(401, "Refresh token is missing.");
+  }
+
+  const result = await authService.refreshToken(token);
+
+  res.cookie("refreshToken", result.refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  sendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: "Token refreshed successfully",
+    data: {
+      user: result.user,
+      accessToken: result.accessToken,
+    },
+  });
+};
+
 const getMe = async (req: Request, res: Response) => {
   const result = await authService.getMe(req.user!.id);
 
@@ -58,5 +85,7 @@ const getMe = async (req: Request, res: Response) => {
 export const authController = {
   register,
   login,
+  refreshToken,
   getMe,
 };
+

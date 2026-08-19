@@ -19,6 +19,9 @@ router.post(
   catchAsync(authController.login),
 );
 
+router.post("/refresh-token", catchAsync(authController.refreshToken));
+
 router.get("/me", authenticate, catchAsync(authController.getMe));
 
 export default router;
+

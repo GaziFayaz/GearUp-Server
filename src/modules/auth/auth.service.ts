@@ -111,8 +111,44 @@ const getMe = async (userId: string) => {
   return sanitizeUser(user);
 };
 
+const refreshToken = async (token: string) => {
+  const decoded = jwtUtils.verifyToken(token, config.jwt_refresh_secret);
+  if (!decoded.success || !decoded.payload) {
+    throw new AppError(401, "Invalid or expired refresh token.");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: decoded.payload.id },
+  });
+
+  if (!user) {
+    throw new AppError(401, "User not found.");
+  }
+
+  if (user.status === "SUSPENDED") {
+    throw new AppError(
+      403,
+      "Your account has been suspended. Contact support.",
+    );
+  }
+
+  const tokens = generateTokens({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  return {
+    user: sanitizeUser(user),
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+  };
+};
+
 export const authService = {
   registerUser,
   loginUser,
   getMe,
+  refreshToken,
 };
+
